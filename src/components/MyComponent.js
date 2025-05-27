@@ -14,27 +14,41 @@ class MyComponent extends React.Component {
     }
 
     handleAddNewUser = (userObj) => {
-        let listUserClone = [...this.state.listUser];
-        
-        // this.setState({
-        //     listUser:[userObj, ...this.state.listUser]
-        // })
+        //let listUserClone = [...this.state.listUser];
+
+        this.setState({
+            listUser:[userObj, ...this.state.listUser]
+        })
+    }
+
+    handleDeleteUser = (userId)=>{
+        let listUserClone = this.state.listUser;
+        listUserClone = listUserClone.filter(item => item.id !== userId);
+        this.setState({
+            listUser : listUserClone
+        })
     }
 
     //jsx, ham render ke thua tu react.component, cho phep code html trong js
     //Dry ; dont repeat urself
     render() {
         return (
-            <div>
-                <AddUserInfo 
-                handleAddNewUser={this.handleAddNewUser} // them dau dong mo ngoac se thuc thi cau lenh chu khong phai gan nua
-                />
-                <br></br>
-                <DisplayInfor
-                    listUser={this.state.listUser}
-                    
-                />
-            </div>
+            <>
+                <div className="a">
+                    <AddUserInfo
+                        handleAddNewUser={this.handleAddNewUser} // them dau dong mo ngoac se thuc thi cau lenh chu khong phai gan nua
+                    />
+                    <br></br>
+                    <DisplayInfor
+                        listUser={this.state.listUser}
+                        handleDeleteUser = {this.handleDeleteUser}
+
+                    />
+                </div>
+                <div className="b">
+
+                </div>
+            </>
         );
     }
 }
