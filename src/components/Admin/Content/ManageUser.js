@@ -2,7 +2,7 @@ import { useState } from 'react';
 import Button from 'react-bootstrap/Button';
 import Modal from 'react-bootstrap/Modal';
 import ModelCreateUser from './ModelCreateUser';
-
+import './ManageUser.scss'
 function Example() {
     const [show, setShow] = useState(false);
 
@@ -48,7 +48,7 @@ function Example() {
                         </div>
                         <div className="col-md-12">
                             <label className='form-label'>image</label>
-                            <input type='file'/>
+                            <input type='file' />
                         </div>
 
                     </form>
@@ -74,12 +74,15 @@ const ManageUser = (props) => {
                 Manage User
             </div>
             <div className="users-content">
-                <button>Add new user</button>
+                <div>
+                    <button>Add new user</button>
+                </div>
+                <div>
+                    table users
+
+                </div>
             </div>
-            <div>
-                table users
-                <ModelCreateUser />
-            </div>
+            <ModelCreateUser />
         </div>
     )
 }
