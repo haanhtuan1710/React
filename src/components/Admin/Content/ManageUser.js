@@ -14,7 +14,7 @@ const ManageUser = (props) => {
 
     const [showModalCreateUser, setShowModalCreateUSer] = useState(false);
     const [showModalUpdateUser, setShowModalUpdateUSer] = useState(false);
-    const [dataUpdate,setDataUPdate] = useState({});
+    const [dataUpdate, setDataUPdate] = useState({});
 
 
     const [listUser, setListUser] = useState([]);
@@ -36,13 +36,17 @@ const ManageUser = (props) => {
         setDataUPdate(user);
     }
 
+    const resetUpdateData = () => {
+        setDataUPdate({});
+    }
+
     return (
         <div className="manage-user-container">
             <div className="title">
                 Manage User
             </div>
             <div className="users-content">
-                <div className='btn-add-new'>
+                <div className='btn- d-new'>
                     <button className='btn btn-primary'
                         onClick={() => setShowModalCreateUSer(true)}>
                         <FcPlus />
@@ -53,7 +57,7 @@ const ManageUser = (props) => {
                     <TableUser
                         listUser={listUser}
                         handleClickBtnUpdate={handleClickBtnUpdate}
-                         />
+                    />
                 </div>
             </div>
             <ModelCreateUser
@@ -65,8 +69,9 @@ const ManageUser = (props) => {
             <ModalUpdateUser
                 show={showModalUpdateUser}
                 setShow={setShowModalUpdateUSer}
-                dataUpdate = {dataUpdate}
+                dataUpdate={dataUpdate}
                 fetchListUser={fetchListUser}
+                resetUpdateData={resetUpdateData}
             />
         </div>
     )
