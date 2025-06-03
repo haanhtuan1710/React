@@ -8,12 +8,14 @@ import TableUser from './TableUser';
 import { useEffect, useState } from "react"
 import { getAllUser } from "../../../services/apiServices";
 import ModalUpdateUser from './ModalUpdateUser';
+import ModalViewUser from './ModalViewUser';
 
 
 const ManageUser = (props) => {
 
     const [showModalCreateUser, setShowModalCreateUSer] = useState(false);
     const [showModalUpdateUser, setShowModalUpdateUSer] = useState(false);
+    const [showModalViewUser, setShowModalViewUSer] = useState(false);
     const [dataUpdate, setDataUPdate] = useState({});
 
 
@@ -40,6 +42,12 @@ const ManageUser = (props) => {
         setDataUPdate({});
     }
 
+    const handleClickBtnView = (user) => {
+        setShowModalViewUSer(true);
+        setDataUPdate(user);
+    }
+
+
     return (
         <div className="manage-user-container">
             <div className="title">
@@ -57,6 +65,7 @@ const ManageUser = (props) => {
                     <TableUser
                         listUser={listUser}
                         handleClickBtnUpdate={handleClickBtnUpdate}
+                        handleClickBtnView={handleClickBtnView}
                     />
                 </div>
             </div>
@@ -71,6 +80,13 @@ const ManageUser = (props) => {
                 setShow={setShowModalUpdateUSer}
                 dataUpdate={dataUpdate}
                 fetchListUser={fetchListUser}
+                resetUpdateData={resetUpdateData}
+            />
+
+            <ModalViewUser
+                show={showModalViewUser}
+                setShow={setShowModalViewUSer}
+                dataUpdate={dataUpdate}
                 resetUpdateData={resetUpdateData}
             />
         </div>
