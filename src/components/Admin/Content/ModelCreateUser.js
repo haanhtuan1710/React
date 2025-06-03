@@ -3,11 +3,22 @@ import { useState } from 'react';
 import Button from 'react-bootstrap/Button';
 import Modal from 'react-bootstrap/Modal';
 import { FcPlus } from 'react-icons/fc';
+import { toast } from 'react-toastify';
+import { postCreateNewUser } from '../../../services/apiServices';
 
-const ModelCreateUser = () => {
-    const [show, setShow] = useState(false);
+const ModelCreateUser = (props) => {
+    const { show, setShow } = props;
 
-    const handleClose = () => setShow(false);
+    const handleClose = () => {
+        setShow(false);
+        setEmail("");
+        setPassword("");
+        setUsername("");
+        setRole("User");
+        setImage("");
+        setPreviewImage("");
+    };
+
     const handleShow = () => setShow(true);
 
     const [email, setEmail] = useState("");
@@ -18,21 +29,49 @@ const ModelCreateUser = () => {
     const [previewImage, setPreviewImage] = useState("");
 
     const handleUploadImage = (event) => {
-        if(event.target && event.target.files && event.target.files[0]){
+        if (event.target && event.target.files && event.target.files[0]) {
             setPreviewImage(URL.createObjectURL(event.target.files[0]))
             setImage(event.target.files[0])
-        }else{
+        } else {
             setPreviewImage("")
         }
+
+    }
+
+    const validateEmail = (email) => {
+        return String(email)
+            .toLowerCase()
+            .match(
+                /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|.(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
+            );
+    };
+
+    const handleSubmitCreateUser = async () => {
+        //validate
+        // const isValidateEmail = validateEmail(email);
+        // if (!isValidateEmail) {
+        //     toast.error('Invalid email he. he. he.');
+        //     return;
+        // }
+        if (!password) {
+            toast.error('Invalid password he. he. he.');
+            return;
+        }
+        //call api
+        let data = await postCreateNewUser(email, password, username, role, image);
         
+        if (data && data.EC === 0) {
+            toast.success('Thanh cong user moi roi he. he. he.');
+            handleClose();
+        }
+
+        if (data && data.EC !== 0) {
+            toast.error(data.EM);
+        }
     }
 
     return (
         <>
-            <Button variant="primary" onClick={handleShow}>
-                Launch demo modal
-            </Button>
-
             <Modal
                 backdrop="static"
                 show={show} onHide={handleClose}
@@ -65,9 +104,10 @@ const ModelCreateUser = () => {
                             />
                         </div>
                         <div className="col-md-4">
-                            <label className="form-label">State</label>
+                            <label className="form-label">Role</label>
                             <select id="inputState" className="form-select"
                                 onChange={(event) => setRole(event.target.value)}
+                                value={role}
                             >
                                 <option value="User">User</option>
                                 <option value="User">Admin</option>
@@ -84,10 +124,10 @@ const ModelCreateUser = () => {
                                 onChange={(event) => handleUploadImage(event)} />
                         </div>
                         <div className='col-md-12 img-preview'>
-                            {previewImage ? 
-                            <img src={previewImage}></img> 
-                            : 
-                            <span>preview</span>
+                            {previewImage ?
+                                <img src={previewImage}></img>
+                                :
+                                <span>preview</span>
                             }
 
                         </div>
@@ -98,7 +138,7 @@ const ModelCreateUser = () => {
                     <Button variant="secondary" onClick={handleClose}>
                         Close
                     </Button>
-                    <Button variant="primary" onClick={handleClose}>
+                    <Button variant="primary" onClick={() => handleSubmitCreateUser()}>
                         Save Changes
                     </Button>
                 </Modal.Footer>
