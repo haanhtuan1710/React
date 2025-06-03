@@ -9,7 +9,7 @@ import { useEffect, useState } from "react"
 import { getAllUser } from "../../../services/apiServices";
 import ModalUpdateUser from './ModalUpdateUser';
 import ModalViewUser from './ModalViewUser';
-
+import ModalDeleteUser from './ModalDeleteUser';
 
 const ManageUser = (props) => {
 
@@ -18,7 +18,8 @@ const ManageUser = (props) => {
     const [showModalViewUser, setShowModalViewUSer] = useState(false);
     const [dataUpdate, setDataUPdate] = useState({});
 
-
+    const [showModalDeleteuser, setShowModalDeleteUSer] = useState(false);
+    const [dataDelete, setDataDelete] = useState({});
     const [listUser, setListUser] = useState([]);
 
 
@@ -47,6 +48,10 @@ const ManageUser = (props) => {
         setDataUPdate(user);
     }
 
+    const handleClickBtnDelete = (user)=>{
+        setShowModalDeleteUSer(true);
+        setDataDelete(user);
+    }   
 
     return (
         <div className="manage-user-container">
@@ -66,6 +71,7 @@ const ManageUser = (props) => {
                         listUser={listUser}
                         handleClickBtnUpdate={handleClickBtnUpdate}
                         handleClickBtnView={handleClickBtnView}
+                        handleClickBtnDelete={handleClickBtnDelete}
                     />
                 </div>
             </div>
@@ -88,6 +94,11 @@ const ManageUser = (props) => {
                 setShow={setShowModalViewUSer}
                 dataUpdate={dataUpdate}
                 resetUpdateData={resetUpdateData}
+            />
+            <ModalDeleteUser
+                show={showModalDeleteuser}
+                setShow={setShowModalDeleteUSer}
+                dataDelete={dataDelete}
             />
         </div>
     )
