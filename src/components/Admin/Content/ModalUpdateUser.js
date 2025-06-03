@@ -4,7 +4,7 @@ import Button from 'react-bootstrap/Button';
 import Modal from 'react-bootstrap/Modal';
 import { FcPlus } from 'react-icons/fc';
 import { toast } from 'react-toastify';
-import { postCreateNewUser } from '../../../services/apiServices';
+import { putUpdateUser } from '../../../services/apiServices';
 import _ from 'lodash';
 import { data } from 'react-router-dom';
 
@@ -15,7 +15,7 @@ const ModalUpdateUser = (props) => {
         setShow(false);
         setEmail("");
         setUsername("");
-        setRole("User");
+        setRole("USER");
         setImage("");
         setPreviewImage("");
     };
@@ -25,7 +25,7 @@ const ModalUpdateUser = (props) => {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [username, setUsername] = useState("");
-    const [role, setRole] = useState("User");
+    const [role, setRole] = useState("USER");
     const [image, setImage] = useState("");
     const [previewImage, setPreviewImage] = useState("");
 
@@ -67,15 +67,11 @@ const ModalUpdateUser = (props) => {
             toast.error('Invalid email he. he. he.');
             return;
         }
-        if (!password) {
-            toast.error('Invalid password he. he. he.');
-            return;
-        }
         //call api
-        let data = await postCreateNewUser(email, password, username, role, image);
+        let data = await putUpdateUser(dataUpdate.id, username, role, image);
 
         if (data && data.EC === 0) {
-            toast.success('Thanh cong user moi roi he. he. he.');
+            toast.success('Thanh cong roi he. he. he.');
             handleClose();
             await props.fetchListUser();
         }
@@ -129,9 +125,8 @@ const ModalUpdateUser = (props) => {
                                 onChange={(event) => setRole(event.target.value)}
                                 value={role}
                             >
-                                <option value="User">User</option>
-                                <option value="User">Admin</option>
-
+                                <option value="User">USER</option>
+                                <option value="Admin">ADMIN</option>
                             </select>
                         </div>
                         <div className="col-md-12">
