@@ -63,6 +63,7 @@ const ModelCreateUser = (props) => {
         if (data && data.EC === 0) {
             toast.success('Thanh cong user moi roi he. he. he.');
             handleClose();
+            await props.fetchListUser();
         }
 
         if (data && data.EC !== 0) {
