@@ -48,18 +48,18 @@ const ModelCreateUser = (props) => {
 
     const handleSubmitCreateUser = async () => {
         //validate
-        // const isValidateEmail = validateEmail(email);
-        // if (!isValidateEmail) {
-        //     toast.error('Invalid email he. he. he.');
-        //     return;
-        // }
+        const isValidateEmail = validateEmail(email);
+        if (!isValidateEmail) {
+            toast.error('Invalid email he. he. he.');
+            return;
+        }
         if (!password) {
             toast.error('Invalid password he. he. he.');
             return;
         }
         //call api
         let data = await postCreateNewUser(email, password, username, role, image);
-        
+
         if (data && data.EC === 0) {
             toast.success('Thanh cong user moi roi he. he. he.');
             handleClose();
