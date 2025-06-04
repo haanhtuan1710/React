@@ -8,12 +8,13 @@ import { useState, useEffect } from "react";
 
 
 const TableUserPaginate = (props) => {
-    
+
     const { listUser, pageCount } = props;
 
     const handlePageClick = (event) => {
         props.fetchListUserwithPaginate(+event.selected + 1);
-        console.log(`User requested page number ${event.selected}`);
+        props.setCurrentPage(+event.selected + 1)
+        console.log(`User requested page number ${event.selected+1}`);
     }
 
     return (
@@ -79,6 +80,7 @@ const TableUserPaginate = (props) => {
                     containerClassName="pagination"
                     activeClassName="active"
                     renderOnZeroPageCount={null}
+                    forcePage={props.currentPage - 1}
                 />
             </div>
         </>
