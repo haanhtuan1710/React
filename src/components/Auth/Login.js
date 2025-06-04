@@ -10,6 +10,7 @@ const Login = (props) => {
     const [email, setEmail] = useState();
     const [password, setPassword] = useState();
     const navigate = useNavigate();
+    
 
     const handleLogin = async () => {
         //validate
@@ -31,7 +32,7 @@ const Login = (props) => {
         <div className="login-container">
             <div className="header">
                 <span>Don't have an account yet ?</span>
-                <button>Sign up</button>
+                <button onClick={() => navigate('/register')}>Sign up</button>
             </div>
             <div className="title col-4 mx-auto">
                 Hat1710
