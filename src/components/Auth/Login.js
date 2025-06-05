@@ -44,7 +44,7 @@ const Login = (props) => {
             dispatch(doLogin(data))
             toast.success('Dang nhap thanh cong roi he. he. he.');
             setIsLoading(false);
-            //navigate('/');
+            navigate('/');
         }
 
         if (data && +data.EC !== 0) {
