@@ -3,6 +3,9 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { postLogin } from "../../services/apiServices";
 import { toast } from "react-toastify";
+import { useDispatch } from "react-redux";
+import { doLogin } from "../../redux/action/userAction.js";
+
 
 
 const Login = (props) => {
@@ -10,14 +13,34 @@ const Login = (props) => {
     const [email, setEmail] = useState();
     const [password, setPassword] = useState();
     const navigate = useNavigate();
-    
+    const dispatch = useDispatch();
+
+
+    const validateEmail = (email) => {
+        return String(email)
+            .toLowerCase()
+            .match(
+                /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|.(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
+            );
+    };
+
 
     const handleLogin = async () => {
         //validate
+        const isValidateEmail = validateEmail(email);
+        if (!isValidateEmail) {
+            toast.error('Invalid email he. he. he.');
+            return;
+        }
+        if (!password) {
+            toast.error('Invalid password he. he. he.');
+            return;
+        }
 
         //submit api
         let data = await postLogin(email, password);
         if (data && data.EC === 0) {
+            dispatch(doLogin(data))
             toast.success('Dang nhap thanh cong roi he. he. he.');
             navigate('/');
         }
