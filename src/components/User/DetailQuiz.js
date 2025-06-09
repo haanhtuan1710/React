@@ -1,14 +1,18 @@
-import { useEffect } from "react";
-import { useParams, useLocation } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { useParams, useLocation, data } from "react-router-dom";
 import { getDataQuiz } from "../../services/apiServices";
 import _ from 'lodash';
 import './DetailQuiz.scss'
+import Question from "./Question";
 
 const DetailQuiz = () => {
 
     const location = useLocation();
     const params = useParams();
     const quizId = params.id;
+
+    const [dataQuiz, setDataQuiz] = useState([]);
+    const [index, setIndex] = useState(0);
 
 
     useEffect(() => {
@@ -26,19 +30,52 @@ const DetailQuiz = () => {
                 .map((value, key) => {
                     let answers = [];
                     let questionDescription, image = null;
-                    value.forEach((index, item) => {
+                    value.forEach((item, index) => {
                         if (index === 0) {
                             questionDescription = item.questionDescription;
                             image = item.image;
                         }
+                        item.answers.isSelected = false;
                         answers.push(item.answers);
                     })
                     return { questionId: key, answers, questionDescription, image }
                 }
                 )
                 .value();
+            console.log(data)
+            setDataQuiz(data)
         }
     }
+    const handlePrev = () => {
+        if (index - 1 < 0) return;
+        setIndex(index - 1)
+    }
+    const handleNext = () => {
+        if (dataQuiz && dataQuiz.length > index + 1)
+            setIndex(index + 1)
+    }
+
+    const handleCheckBox = (answerId, questionId) => {
+        let dataQuizClone = _.cloneDeep(dataQuiz);
+        let question = dataQuizClone.find(item => +item.questionId === +questionId);
+        if (question && question.answers) {
+            let b = question.answers.map(item => {
+                if (+item.id === answerId) {
+                    item.isSelected = !item.isSelected;
+                }
+                return item
+            })
+
+            question.answers = b;
+        }
+        let index = dataQuizClone.findIndex(item => +item.questionId === +questionId)
+        if (index > -1) {
+            dataQuizClone[index] = question;
+            setDataQuiz(dataQuizClone);
+        }
+
+    }
+
     return (
         <div className="detail-quiz-container">
             <div className="left-content">
@@ -50,18 +87,31 @@ const DetailQuiz = () => {
                     <img />
                 </div>
                 <div className="q-content">
-                    <div className="question">
-                        Question1: a?
-                    </div>
-                    <div className="answer">
-                        <div>1</div>
-                        <div>2</div>
-                        <div>3</div>
-                    </div>
+                    <Question
+                        index={index}
+                        handleCheckBox={handleCheckBox}
+                        data={dataQuiz && dataQuiz.length > 0
+                            ?
+                            dataQuiz[index]
+                            :
+                            []
+                        }
+                    />
                 </div>
                 <div className="footer">
-                    <button className="btn btn-primary">Prev</button>
-                    <button className="btn btn-secondary">Next</button>
+                    <button className="btn btn-primary"
+                        onClick={() => handlePrev()}
+
+                    >Prev</button>
+                    <button className="btn btn-secondary"
+                        onClick={() => handleNext()}
+
+                    >Next</button>
+
+                    <button className="btn btn-warning"
+                        onClick={() => handleNext()}
+
+                    >Finish</button>
                 </div>
 
             </div>
