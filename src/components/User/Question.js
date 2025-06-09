@@ -8,7 +8,6 @@ const Question = (props) => {
     }
 
     const handleHandleCheckBox = (event, aId, qId) => {
-        console.log(data, aId)
         props.handleCheckBox(aId, qId)
     }
 
@@ -40,7 +39,7 @@ const Question = (props) => {
                                         type="checkbox"
                                         value=""
                                         checked={a.isSelected}
-                                        onChange={(event) => { handleHandleCheckBox(event, a.id,data.questionId) }}
+                                        onChange={(event) => { handleHandleCheckBox(event, a.id, data.questionId) }}
                                     />
                                     <label className="form-check-label" >
                                         {a.description}

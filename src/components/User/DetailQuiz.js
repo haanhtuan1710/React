@@ -42,7 +42,6 @@ const DetailQuiz = () => {
                 }
                 )
                 .value();
-            console.log(data)
             setDataQuiz(data)
         }
     }
@@ -74,6 +73,32 @@ const DetailQuiz = () => {
             setDataQuiz(dataQuizClone);
         }
 
+    }
+
+    const handleFinishQuiz = () => {
+        let payLoad = {
+            quizId: quizId,
+            answers: []
+        };
+        let answers = [];
+        if (dataQuiz && dataQuiz.length > 0) {
+            dataQuiz.forEach(question => {
+                let object
+                let questionId = question.questionId;
+
+                question.answers.forEach(a => {
+                    if(a.isSelected === true){
+                        userAnswerId.push(a.id)
+                    }
+                })
+                answers.push({
+                    questionId: +questionId,
+                    userAnswerId: userAnswerId
+                })
+            })
+
+            payLoad.answers = answers;
+        }
     }
 
     return (
@@ -109,7 +134,7 @@ const DetailQuiz = () => {
                     >Next</button>
 
                     <button className="btn btn-warning"
-                        onClick={() => handleNext()}
+                        onClick={() => handleFinishQuiz()}
 
                     >Finish</button>
                 </div>
