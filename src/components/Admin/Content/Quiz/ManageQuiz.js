@@ -79,6 +79,7 @@ const ManageQuiz = (props) => {
                                     placeholder='Quiz type..'
                                 />
                             </div>
+                            
                             <div className='more-actions form-group'>
                                 <label className='mb-1'>Upload image</label>
                                 <input
@@ -88,8 +89,8 @@ const ManageQuiz = (props) => {
                                 />
                             </div>
                         </div>
-                        <fieldset className="border rounded-3 p-3">
-                            <div className='mt-3'>
+                        <fieldset className="border rounded-3 p-2">
+                            <div className='mt-2'>
                                 <button
                                     className='btn btn-warning'
                                     onClick={() => handleSubmitQuiz()}
