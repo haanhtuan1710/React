@@ -12,9 +12,10 @@ import { FaTachometerAlt, FaGem, FaList, FaGithub, FaRegLaughWink, FaHeart } fro
 import sidebarBg from '../../assets/bg2.jpg';
 import { DiReact } from 'react-icons/di';
 import { MdDashboard } from 'react-icons/md';
-import { Link, Outlet } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 
 const SideBar = (props) => {
+    const navigate = useNavigate();
     const { image, collapsed, toggled, handleToggleSidebar } = props;
     return (
         <>
@@ -39,7 +40,7 @@ const SideBar = (props) => {
                         }}
                     >
                         <DiReact size={'3em'} color='blue' />
-                        Hat1710
+                        <span onClick={() => navigate("/")}>Hat1710</span>
                     </div>
                 </SidebarHeader>
 
@@ -49,7 +50,7 @@ const SideBar = (props) => {
                             icon={<MdDashboard />}
                         >
                             Dash board
-                            <Link to ="/admins"/>
+                            <Link to="/admins" />
                         </MenuItem>
                     </Menu>
                     <Menu iconShape="circle">
@@ -57,9 +58,9 @@ const SideBar = (props) => {
                             icon={<FaGem />}
                             title="Features"
                         >
-                            <MenuItem> Quản lý User <Link to ="/admins/manage-users"/></MenuItem>
-                            <MenuItem> Quản lý Admin </MenuItem>
-                            <MenuItem> Quản lý bài thi</MenuItem>
+                            <MenuItem> Quản lý User <Link to="/admins/manage-users" /></MenuItem>
+                            <MenuItem> Quản lý bài Quiz <Link to="/admins/manage-quizzes" /></MenuItem>
+                            <MenuItem> Quản lý câu hỏi</MenuItem>
                         </SubMenu>
 
 
