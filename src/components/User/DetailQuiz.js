@@ -1,9 +1,10 @@
 import { useEffect, useState } from "react";
 import { useParams, useLocation, data } from "react-router-dom";
-import { getDataQuiz } from "../../services/apiServices";
+import { getDataQuiz, postSubmitQuiz } from "../../services/apiServices";
 import _ from 'lodash';
 import './DetailQuiz.scss'
 import Question from "./Question";
+import ModalResult from "./ModalResult";
 
 const DetailQuiz = () => {
 
@@ -13,6 +14,9 @@ const DetailQuiz = () => {
 
     const [dataQuiz, setDataQuiz] = useState([]);
     const [index, setIndex] = useState(0);
+
+    const [isShowModalResult, setIsShowModalResult] = useState(false);
+    const [dataModalResult, setDataModalResult] = useState({});
 
 
     useEffect(() => {
@@ -75,7 +79,7 @@ const DetailQuiz = () => {
 
     }
 
-    const handleFinishQuiz = () => {
+    const handleFinishQuiz = async () => {
         let payLoad = {
             quizId: quizId,
             answers: []
@@ -83,11 +87,11 @@ const DetailQuiz = () => {
         let answers = [];
         if (dataQuiz && dataQuiz.length > 0) {
             dataQuiz.forEach(question => {
-                let object
                 let questionId = question.questionId;
+                let userAnswerId = [];
 
                 question.answers.forEach(a => {
-                    if(a.isSelected === true){
+                    if (a.isSelected === true) {
                         userAnswerId.push(a.id)
                     }
                 })
@@ -98,6 +102,19 @@ const DetailQuiz = () => {
             })
 
             payLoad.answers = answers;
+            let res = await postSubmitQuiz(payLoad);
+            if (res && res.EC === 0) {
+                setDataModalResult({
+                    countCorrect: res.DT.countCorrect,
+                    countTotal: res.DT.countTotal,
+                    quizData: res.DT.quizData
+
+                })
+                setIsShowModalResult(true);
+            } else {
+                alert('something wrong')
+            }
+
         }
     }
 
@@ -143,6 +160,11 @@ const DetailQuiz = () => {
             <div className="right-content">
                 count down
             </div>
+            <ModalResult
+                show={isShowModalResult}
+                setShow={setIsShowModalResult}
+                dataModalResult={dataModalResult}
+            />
         </div>
 
     )
