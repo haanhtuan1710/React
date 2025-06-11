@@ -5,6 +5,7 @@ import './Questions.scss'
 import { RiImageAddFill } from "react-icons/ri";
 import { v4 as uuidv4 } from 'uuid';
 import _ from 'lodash'
+import Lightbox from "yet-another-react-lightbox";
 
 const Questions = () => {
     const options = [
@@ -12,6 +13,7 @@ const Questions = () => {
         { value: 'MEDIUM', label: 'MEDIUM' },
         { value: 'HARD', label: 'HARD' },
     ];
+
     const [selectedQuiz, setSelectedQuiz] = useState({})
     const [questions, setQuestions] = useState([
         {
@@ -28,6 +30,8 @@ const Questions = () => {
             ]
         }
     ]);
+
+    const [isPreviewImage, setIsPreviewImage] = useState(null);
 
     const handleAddRemoveQuestion = (type, id) => {
         if (type === 'ADD') {
@@ -92,6 +96,7 @@ const Questions = () => {
         if (index > -1 && event.target && event.target.files && event.target.files[0]) {
             questionsClone[index].imageFile = event.target.files[0];
             questionsClone[index].imageName = event.target.files[0].name;
+            console.log("Tên ảnh:", event.target.files[0]);
             setQuestions(questionsClone);
         }
     }
@@ -135,105 +140,129 @@ const Questions = () => {
                         options={options}
                     />
                 </div>
-            </div>
-            <div className='mt-3 mb-2'>
-                ADD questions :
-            </div>
-            {
-                questions && questions.length > 0
-                && questions.map((question, index) => {
-                    return (
-                        <div key={question.id} className='q-main mb-4'>
-                            <div className='questions-content'>
-                                <div class="form-floating description">
-                                    <input
-                                        type="text"
-                                        class="form-control"
-                                        placeholder="name@example.com"
-                                        value={question.description}
-                                        onChange={(event) => handleOnChange('QUESTION', question.id, event.target.value)}
-                                    />
-                                    <label> Question {index + 1} 's description</label>
-                                </div>
-                                <div className='group-upload'>
-                                    <label htmlFor={`${question.id}`} >
-                                        <RiImageAddFill className='label-up' />
-                                    </label>
-                                    <input
-                                        id={`${question.id}`}
-                                        onChange={(event) => handleOnChangeFileQuestion(question.id, event)}
-                                        type={'file'}
-                                        hidden
-                                    />
-                                    <span >{question.imageName ? question.imageName : '0 file is upload'}</span>
-                                </div>
-                                <div className='btn-add'>
-                                    <span onClick={() => handleAddRemoveQuestion('ADD', '')} >
-                                        <BsFillPatchPlusFill className='icon-add' />
-                                    </span>
-                                    {
-                                        questions.length > 1 &&
-
-                                        <span onClick={() => handleAddRemoveQuestion('REMOVE', question.id)}>
-                                            <BsFillPatchMinusFill className='icon-remove' />
+                <div className='mt-3 mb-2'>
+                    ADD questions :
+                </div>
+                {
+                    questions && questions.length > 0
+                    && questions.map((question, index) => {
+                        return (
+                            <div key={question.id} className='q-main mb-4'>
+                                <div className='questions-content'>
+                                    <div className="form-floating description">
+                                        <input
+                                            type="text"
+                                            className="form-control"
+                                            placeholder="name@example.com"
+                                            value={question.description}
+                                            onChange={(event) => handleOnChange('QUESTION', question.id, event.target.value)}
+                                        />
+                                        <label> Question {index + 1} 's description</label>
+                                    </div>
+                                    <div className='group-upload'>
+                                        <label htmlFor={`${question.id}`} >
+                                            <RiImageAddFill className='label-up' />
+                                        </label>
+                                        <input
+                                            id={`${question.id}`}
+                                            onChange={(event) => handleOnChangeFileQuestion(question.id, event)}
+                                            type={'file'}
+                                            hidden
+                                        />
+                                        <span >
+                                            {question.imageName
+                                                ?
+                                                <span
+                                                    style={{ cursor: 'pointer' }}
+                                                    onClick={() => {
+                                                        if (question.imageFile) {
+                                                            setIsPreviewImage(URL.createObjectURL(question.imageFile));
+                                                        }
+                                                    }}>{question.imageName}</span>
+                                                :
+                                                '0 file is upload'
+                                            }
                                         </span>
-                                    }
+                                    </div>
+                                    <div className='btn-add'>
+                                        <span onClick={() => handleAddRemoveQuestion('ADD', '')} >
+                                            <BsFillPatchPlusFill className='icon-add' />
+                                        </span>
+                                        {
+                                            questions.length > 1 &&
+
+                                            <span onClick={() => handleAddRemoveQuestion('REMOVE', question.id)}>
+                                                <BsFillPatchMinusFill className='icon-remove' />
+                                            </span>
+                                        }
+                                    </div>
                                 </div>
-                            </div>
-                            {
-                                question.answers && question.answers.length > 0
-                                && question.answers.map((answer, index) => {
-                                    return (
-                                        <div key={answer.id} className='answers-content'>
-                                            <input
-                                                className="form-check-input iscorrect"
-                                                type="checkbox"
-                                                value=""
-                                                checked={answer.isCorrect}
-                                                onChange={(event) =>
-                                                    handleAnswerQuestion
-                                                        ('CHECKBOX', answer.id, question.id, event.target.checked)}
-                                            />
-                                            <div class="form-floating answer-name">
+                                {
+                                    question.answers && question.answers.length > 0
+                                    && question.answers.map((answer, index) => {
+                                        return (
+                                            <div key={answer.id} className='answers-content'>
                                                 <input
-                                                    value={answer.description}
-                                                    type="text"
-                                                    class="form-control"
-                                                    placeholder="name@example.com"
+                                                    className="form-check-input iscorrect"
+                                                    type="checkbox"
+                                                    value=""
+                                                    checked={answer.isCorrect}
                                                     onChange={(event) =>
                                                         handleAnswerQuestion
-                                                            ('INPUT', answer.id, question.id, event.target.value)}
+                                                            ('CHECKBOX', answer.id, question.id, event.target.checked)}
                                                 />
-                                                <label>Answer {index + 1}</label>
-                                            </div>
-                                            <div className='btn-group'>
-                                                <span onClick={() => handleAddRemoveAnswer('ADD', question.id)} >
-                                                    <BsFillPatchPlusFill className='icon-add' />
-                                                </span>
-                                                {question.answers.length > 1 &&
-                                                    <span onClick={() => handleAddRemoveAnswer('REMOVE', question.id, answer.id)}>
-                                                        <BsFillPatchMinusFill className='icon-remove' />
+                                                <div className="form-floating answer-name">
+                                                    <input
+                                                        value={answer.description}
+                                                        type="text"
+                                                        className="form-control"
+                                                        placeholder="name@example.com"
+                                                        onChange={(event) =>
+                                                            handleAnswerQuestion
+                                                                ('INPUT', answer.id, question.id, event.target.value)}
+                                                    />
+                                                    <label>Answer {index + 1}</label>
+                                                </div>
+                                                <div className='btn-group'>
+                                                    <span onClick={() => handleAddRemoveAnswer('ADD', question.id)} >
+                                                        <BsFillPatchPlusFill className='icon-add' />
                                                     </span>
-                                                }
+                                                    {question.answers.length > 1 &&
+                                                        <span onClick={() => handleAddRemoveAnswer('REMOVE', question.id, answer.id)}>
+                                                            <BsFillPatchMinusFill className='icon-remove' />
+                                                        </span>
+                                                    }
+                                                </div>
                                             </div>
-                                        </div>
-                                    )
-                                })
-                            }
+                                        )
+                                    })
+                                }
+                            </div>
+
+                        )
+                    })
+                }
+                {
+                    questions && questions.length > 0 &&
+                    <div>
+                        <button
+                            onClick={() => handleSubmitQuesionForQuiz()}
+                            className='btn btn-warning'>Save Question</button>
+                    </div>
+                }
+                {
+                    isPreviewImage &&
+                    <Lightbox
+                        open={true}
+                        close={() => setIsPreviewImage(null)}
+                        slides={[
+                            { src: isPreviewImage },
+                        ]}
+                    />
+                }
+            </div>
 
 
-                        </div>
-                    )
-                })
-            }
-            {
-                questions && questions.length > 0 &&
-                <div>
-                    <button
-                        onClick={() => handleSubmitQuesionForQuiz()}
-                        className='btn btn-warning'>Save Question</button>
-                </div>
-            }
         </div>
     )
 }
