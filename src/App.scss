@@ -90,13 +90,17 @@ body {
         align-items: center;
         display: flex;
         border: none;
-        
+
         &:hover {
           background: black;
         }
       }
 
     }
+  }
+
+  .app-content {
+    height: calc(100vh - 60px)
   }
 
 }

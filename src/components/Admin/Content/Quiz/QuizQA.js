@@ -7,7 +7,12 @@ import { v4 as uuidv4 } from 'uuid';
 import _ from 'lodash';
 import Lightbox from "yet-another-react-lightbox";
 import { toast } from 'react-toastify';
-import { getAllQuizForAdmin, postCreateNewQuestionForQuiz, postCreateNewAnswerForQuestion } from "../../../../services/apiServices";
+import {
+    getAllQuizForAdmin,
+    postCreateNewQuestionForQuiz,
+    getQuizWithQA,
+    postCreateNewAnswerForQuestion
+} from "../../../../services/apiServices";
 
 const QuizQA = () => {
 
@@ -32,9 +37,50 @@ const QuizQA = () => {
     const [isPreviewImage, setIsPreviewImage] = useState(null);
 
     const [listQuiz, setListQuiz] = useState([]);
+
     useEffect(() => {
         fetchQuiz();
     }, [])
+
+    useEffect(() => {
+        if (selectedQuiz && selectedQuiz.value) {
+            fetchQuizWithQA();
+        }
+    }, [selectedQuiz])
+
+    // return a promise that resolves with a File instance
+    function urlToFile(url, filename, mimeType) {
+        return (fetch(url)
+            .then(function (res) { return res.arrayBuffer(); })
+            .then(function (buf) {
+                return new File([buf], filename, { type: mimeType });
+            })
+        );
+    }
+
+
+    const fetchQuizWithQA = async () => {
+        let res = await getQuizWithQA(selectedQuiz.value);
+
+        if (res && res.EC === 0) {
+            let newQA = [];
+
+            for (let i = 0; i < res.DT.qa.length; i++) {
+                let q = res.DT.qa[i];
+                if (q.imageFile) {
+                    q.imageName = `Question-${q.id}.png`;
+                    q.imageFile = await urlToFile(
+                        `data:image/jpg;base64,${q.imageFile}`,
+                        `Question-${q.id}.png`,
+                        'image/jpg'
+                    );
+                }
+                newQA.push(q);
+                console.log(res);
+            }
+            setQuestions(newQA);
+        }
+    }
 
     const fetchQuiz = async () => {
         let res = await getAllQuizForAdmin();
@@ -217,12 +263,12 @@ const QuizQA = () => {
     }
 
     return (
-        <div className="questions-container">            
+        <div className="questions-container">
             <div className="add-new-question">
                 <div className='col-6 form group'>
                     <label className='mb-2'>Select Quiz</label>
                     <Select
-                        defaultValue={selectedQuiz}
+                        value={selectedQuiz}
                         onChange={setSelectedQuiz}
                         options={listQuiz}
                     />
