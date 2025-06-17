@@ -7,7 +7,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { logout } from '../../services/apiServices';
 import { toast } from 'react-toastify';
 import { doLogOut } from '../../redux/action/userAction';
-import { computeSlideRect } from 'yet-another-react-lightbox';
+import Language from './Language';
 
 const Header = () => {
 
@@ -26,12 +26,12 @@ const Header = () => {
         navigate('/register')
     }
 
-    const handleLogOut = async() => {
-        let res = await logout(account.email,account.refresh_token);
-        if(res && res.EC ===0){
+    const handleLogOut = async () => {
+        let res = await logout(account.email, account.refresh_token);
+        if (res && res.EC === 0) {
             dispatch(doLogOut());
             navigate('/login');
-        }else{
+        } else {
             toast.error(res.EM);
         }
 
@@ -64,6 +64,9 @@ const Header = () => {
                                 >Log Out</NavDropdown.Item>
                             </NavDropdown>
                         }
+
+                        <Language />
+
                     </Nav>
                 </Navbar.Collapse>
             </Container>
